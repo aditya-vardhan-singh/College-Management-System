@@ -3,15 +3,15 @@
 from sqlalchemy import (
     Integer,
     String,
-    ForeignKey, 
-    VARCHAR, 
+    ForeignKey,
+    VARCHAR,
     CHAR,
     Date,
     Boolean
 )
 from sqlalchemy.orm import (
-    Mapped, 
-    mapped_column, 
+    Mapped,
+    mapped_column,
     relationship,
 )
 from utils import Session, Base
@@ -30,13 +30,12 @@ class Student(Base):
     father_name: Mapped[str] = mapped_column(CHAR(30))
     class_teacher_id: Mapped[int] = mapped_column(Integer, ForeignKey('teacher.id'))
 
-    # Objects
+    # Relationships
     subjects: Mapped[list['Subject']] = relationship(
-        'Subject', 
-        secondary= 'student_subject', 
+        'Subject',
+        secondary= 'student_subject',
         back_populates='students',
     )
-
     subject_teachers: Mapped[list['Teacher']] = relationship('Teacher', secondary='student_teacher', back_populates='students')
     class_teacher: Mapped['Teacher'] = relationship('Teacher', back_populates='class_students')
 
@@ -48,7 +47,7 @@ class Subject(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
 
-    # Objects
+    # Relationship
     students: Mapped[list['Student']] = relationship('Student', secondary='student_subject', back_populates='subjects')
 
 
@@ -67,8 +66,8 @@ class Teacher(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(VARCHAR(30), nullable=False)
     work_experience: Mapped[int] = mapped_column(Integer)
-    
-    # Objects
+
+    # Relationships
     students: Mapped[list['Student']] = relationship('Student', secondary='student_teacher', back_populates='subject_teachers')
     class_students: Mapped[list['Student']] = relationship('Student', back_populates='class_teacher')
 
@@ -84,6 +83,7 @@ class Student_Teacher(Base):
 class Attendance(Base):
     __tablename__='attendance'
 
+    # Fields
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     date: Mapped[Date] = mapped_column(Date, nullable=False)
     student_roll_no: Mapped[int] = mapped_column(Integer, ForeignKey('student.roll_no'), nullable=False)
@@ -93,6 +93,7 @@ class Attendance(Base):
 class Marks(Base):
     __tablename__='marks'
 
+    # Fields
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     marks: Mapped[int] = mapped_column(Integer, nullable=False)
     subject_id: Mapped[int] = mapped_column(Integer, ForeignKey('subject.id'), nullable=False)
